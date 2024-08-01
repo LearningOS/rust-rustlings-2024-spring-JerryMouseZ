@@ -51,17 +51,12 @@ impl From<&str> for Person {
             return Person::default();
         }
 
-        match arg[1].parse::<usize>() {
-            Ok(num) => {
-                return Person {
+        arg[1].parse::<usize>().map_or(Person::default(), |num| {
+                Person {
                     name: String::from(arg[0]),
                     age: num,
                 }
-            }
-            Err(e) => {
-                return Person::default();
-            }
-        }
+        })
     }
 }
 
