@@ -1,6 +1,6 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
 // I AM NOT DONE
 
@@ -36,8 +36,35 @@ where
         self.len() == 0
     }
 
+    fn shift_up(&mut self, idx: usize) {
+        let parent = self.parent_idx(idx);
+        if parent > 0 && (self.comparator)(&self.items[idx], &self.items[parent]) {
+            self.items.swap(idx, parent);
+            self.shift_up(parent);
+        }
+    }
+
+    fn shift_down(&mut self, idx: usize) {
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+
+        if right < self.count + 1 {
+            let mut max_child = left;
+            if (self.comparator)(&self.items[right], &self.items[left]) {
+                max_child = right;
+            }
+            if (self.comparator)(&self.items[max_child], &self.items[idx]) {
+                self.items.swap(max_child, idx);
+                self.shift_down(max_child);
+            }
+        }
+    }
+
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        self.shift_up(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -56,9 +83,10 @@ where
         self.left_child_idx(idx) + 1
     }
 
+    #[allow(dead_code)]
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        0
     }
 }
 
@@ -85,7 +113,13 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+        self.items.swap(1, self.count);
+        self.count -= 1;
+        self.shift_down(1);
+        self.items.pop()
     }
 }
 
